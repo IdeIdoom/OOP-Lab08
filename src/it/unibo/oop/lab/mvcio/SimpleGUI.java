@@ -63,7 +63,7 @@ public final class SimpleGUI {
         		try{
         			writeToFile(textArea.getText());
         		}
-        		catch(IOException error) {
+        		catch(Exception error) {
         			JOptionPane.showMessageDialog(null, error.getMessage(), "An error occurred", JOptionPane.ERROR_MESSAGE);
         		}
         });
@@ -91,12 +91,12 @@ public final class SimpleGUI {
     private void writeToFile(final String text) throws IOException {
     	try {
     		checkIfFileExists();
+    		controller.printString(text);
     	}
     	catch(Exception error)
     	{
     		throw error;
     	}
-		controller.printString(text);
 	}
 
 	public void show() {
