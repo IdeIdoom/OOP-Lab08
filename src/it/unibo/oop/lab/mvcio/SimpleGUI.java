@@ -1,9 +1,10 @@
 package it.unibo.oop.lab.mvcio;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.*;  
+import java.io.IOException;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  * A very simple program using a graphical interface.
@@ -11,7 +12,9 @@ import javax.swing.JFrame;
  */
 public final class SimpleGUI {
 
-    private final JFrame frame = new JFrame();
+    private final JFrame frame = new JFrame("Simple GUI with Controller");
+    
+    private Controller controller = new Controller();
 
     /*
      * Once the Controller is done, implement this class in such a way that:
@@ -51,6 +54,27 @@ public final class SimpleGUI {
         final int sw = (int) screen.getWidth();
         final int sh = (int) screen.getHeight();
         frame.setSize(sw / 2, sh / 2);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        final JPanel panel = new JPanel();
+        final JTextArea textArea = new JTextArea();
+        final JButton save = new JButton("Save");
+        save.addActionListener(ev1 -> {
+        		try{
+        			writeToFile(textArea.getText());
+        		}
+        		catch(IOException error) {
+        			JOptionPane.showMessageDialog(null, error.getMessage(), "An error occurred", JOptionPane.ERROR_MESSAGE);
+        		}
+        });
+        final LayoutManager lm = new BorderLayout();
+        
+        panel.setLayout(lm);
+        
+        panel.add(textArea, BorderLayout.CENTER);
+        panel.add(save, BorderLayout.SOUTH);
+        
+        frame.getContentPane().add(panel);
         /*
          * Instead of appearing at (0,0), upper left corner of the screen, this
          * flag makes the OS window manager take care of the default positioning
@@ -58,5 +82,33 @@ public final class SimpleGUI {
          */
         frame.setLocationByPlatform(true);
     }
+    
+	private void checkIfFileExists() {
+		if (!controller.getFile().getParentFile().exists())
+			throw new IllegalArgumentException("File does not exist");
+	}
+	
+    private void writeToFile(final String text) throws IOException {
+    	try {
+    		checkIfFileExists();
+    	}
+    	catch(Exception error)
+    	{
+    		throw error;
+    	}
+		controller.printString(text);
+	}
 
+	public void show() {
+    	frame.setVisible(true);
+    }
+    
+    public static void main(final String... a) {
+        final SimpleGUI gui = new SimpleGUI();
+        gui.show();
+        
+    }
+    
 }
+
+
